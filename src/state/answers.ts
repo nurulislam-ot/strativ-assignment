@@ -6,17 +6,17 @@ import { AnswerI, SubmitAnswerPayloadI } from "@/interface/answer"
 
 interface AnswerStateI {
   answers: AnswerI[]
-  submitAnswer: (answer: SubmitAnswerPayloadI) => void
-  updateAnswer: (answer: SubmitAnswerPayloadI) => void
+  submitAnswer: (payload: SubmitAnswerPayloadI) => void
+  updateAnswer: (payload: SubmitAnswerPayloadI) => void
 }
 
 export const useAnswerStore = create<AnswerStateI>()(
   persist(
     (set, get) => ({
       answers: [],
-      submitAnswer: answer => {
+      submitAnswer: payload => {
         const previousAnswers =
-          get().answers.find(question => question.id === answer.questionId)
+          get().answers.find(question => question.id === payload.questionId)
             ?.previousAnswers || []
 
         return set({
@@ -25,26 +25,30 @@ export const useAnswerStore = create<AnswerStateI>()(
             {
               id: randomId(),
               previousAnswers,
-              ...answer
+              ...payload
             }
           ]
         })
       },
-      updateAnswer: answer => {
+      updateAnswer: payload => {
         const previousAnswers =
-          get().answers.find(question => question.id === answer.questionId)
+          get().answers.find(answer => answer.questionId === payload.questionId)
             ?.previousAnswers || []
-        previousAnswers.push(answer.answer)
+
+        const updatedAnswers = get().answers.map(answer => {
+          if (answer.questionId === payload.questionId) {
+            return {
+              ...answer,
+              answer: payload.answer,
+              previousAnswers: [...previousAnswers, answer.answer]
+            }
+          }
+
+          return answer
+        })
 
         return set({
-          answers: [
-            ...get().answers,
-            {
-              id: randomId(),
-              previousAnswers,
-              ...answer
-            }
-          ]
+          answers: updatedAnswers
         })
       }
     }),

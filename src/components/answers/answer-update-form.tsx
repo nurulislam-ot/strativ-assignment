@@ -1,6 +1,5 @@
 import { Controller, useForm } from "react-hook-form"
 
-import { toast } from "@/hooks/use-toast"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useAnswerStore } from "@/state/answers"
@@ -9,17 +8,18 @@ import { SubmitAnswerPayloadI } from "@/interface/answer"
 import { useAuthenticationStore } from "@/state/authentication"
 import InputErrorMessage from "@/components/input-error-message"
 import useGetMyAnswerByQuestionId from "@/hooks/use-get-my-answer-by-quid"
+import { toast } from "@/hooks/use-toast"
 
 interface AnswerFormPropsI {
-  isAnswerUpdating: boolean
   questionId: string
+  setIsAnswerUpdating: (isAnswerUpdating: boolean) => void
 }
 
-export default function AnswerForm({
+export default function AnswerUpdateForm({
   questionId,
-  isAnswerUpdating
+  setIsAnswerUpdating
 }: AnswerFormPropsI) {
-  const { submitAnswer } = useAnswerStore()
+  const { updateAnswer } = useAnswerStore()
   const { authenticatedUser } = useAuthenticationStore()
   const myAnswer = useGetMyAnswerByQuestionId(questionId)
   const { control, handleSubmit } = useForm<SubmitAnswerPayloadI>({
@@ -31,16 +31,14 @@ export default function AnswerForm({
   })
 
   const submitAnswerHandler = (data: SubmitAnswerPayloadI) => {
-    submitAnswer(data)
-
+    updateAnswer(data)
     toast({
       title: "Answer submitted",
-
       description: "Your answer has been submitted successfully"
     })
-  }
 
-  const isFormDisabled = isAnswerUpdating || myAnswer?.answer ? true : false
+    setIsAnswerUpdating(false)
+  }
 
   return (
     <form
@@ -56,7 +54,6 @@ export default function AnswerForm({
             <div className="grid w-full gap-1.5 mb-3">
               <Label htmlFor="answer">Your Answer</Label>
               <Textarea
-                disabled={isFormDisabled}
                 placeholder="Bangladesh is located in Asia"
                 id="answer"
                 rows={4}
@@ -68,8 +65,15 @@ export default function AnswerForm({
         />
       </div>
       <div className="flex gap-2">
-        <Button disabled={isFormDisabled} type="submit">
-          Submit
+        <Button type="submit">Update</Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            setIsAnswerUpdating(false)
+          }}
+        >
+          Cancel
         </Button>
       </div>
     </form>

@@ -66,6 +66,7 @@ function App() {
             </AuthenticatedRoute>
           }
         />
+        <Route path="*" element={<Navigate to="/signin" />} />
       </Routes>
 
       <Toaster />
