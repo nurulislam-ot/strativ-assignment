@@ -1,51 +1,35 @@
-# React + TypeScript + Vite
+# Question-Answer Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a simple Question-Answer Management System with two types of users: **Admin** and **General User**. Admins can manage questions, while general users can answer those questions.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+### Admin
+- **Add Questions**: Admins can create questions for users to answer.
+- **View Answers**: Admins can view all submitted answers for each question.
+- **Edit Questions**: Admins can edit existing questions.
+- **Delete Questions**: Admins can delete any question.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### General User
+- **Answer Questions**: Users can answer any available question.
+- **Edit Answers**: Users can update their answers. The system keeps a list of all previous answers for reference.
 
-- Configure the top-level `parserOptions` property like this:
+### Default Users
+| Email                 | Password  | Role     |
+|-----------------------|-----------|----------|
+| john.doe@gmail.com    | 123456    | General  |
+| admin@gmail.com       | password  | Admin    |
+| user@gmail.com        | 123456    | General  |
+| bangladesh@gmail.com  | password  | Admin    |
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Installation
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-# strativ-task
+1. Clone the repository:
+   ```bash
+   git clone <repository_url>
+   cd <project_directory>
+   pnpm install
