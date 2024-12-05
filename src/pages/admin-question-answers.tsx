@@ -1,20 +1,16 @@
-import { useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 
-import { useAnswerStore } from "@/state/answers"
 import { useQuestionStore } from "@/state/questions"
 import BackButtonWithHeading from "@/components/back-button-with-heading"
+import AnswerList from "@/components/admin-question-answers/answer-list"
 
 export default function AdminQuestionAnswers() {
-  const { questionId } = useParams<{ questionId: string }>()
-
-  const { answers } = useAnswerStore()
   const { questions } = useQuestionStore()
+  const { questionId } = useParams<{ questionId: string }>()
 
   const question = questions.find(question => question.id === questionId)
 
-  const questionAnswers = answers.filter(
-    answer => answer.questionId === questionId
-  )
+  if (!question) return <Navigate to="/admin/questions" />
 
   return (
     <div className="container mx-auto py-10">
@@ -22,14 +18,7 @@ export default function AdminQuestionAnswers() {
         <BackButtonWithHeading heading={question?.question} />
       </div>
 
-      <div>
-        <h2 className="text-lg font-medium">Answers</h2>
-        <ul>
-          {questionAnswers.map(answer => (
-            <li key={answer.id}>{answer.answer}</li>
-          ))}
-        </ul>
-      </div>
+      <AnswerList questionId={question.id} />
     </div>
   )
 }

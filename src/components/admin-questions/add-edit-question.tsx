@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { randomId } from "@/service/random-id"
 import { Button } from "@/components/ui/button"
 import { useQuestionStore } from "@/state/questions"
+import { useAuthenticationStore } from "@/state/authentication"
 import InputErrorMessage from "@/components/input-error-message"
 
 export default function AddOrEditQuestion() {
@@ -31,11 +32,12 @@ export default function AddOrEditQuestion() {
     removeActiveQuestion,
     updateQuestion
   } = useQuestionStore()
+  const { authenticatedUser } = useAuthenticationStore()
 
   const { handleSubmit, control, setValue } = useForm<
     AddQuestionPayloadI | UpdateQuestionPayloadI
   >({
-    defaultValues: { question: "", createdAdminId: "" }
+    defaultValues: { question: "" }
   })
 
   const addOrEditQuestionHandler = (
@@ -49,7 +51,8 @@ export default function AddOrEditQuestion() {
     } else {
       addQuestion({
         id: randomId(),
-        ...data
+        ...data,
+        createdAdminId: authenticatedUser?.id ?? ""
       })
     }
 
@@ -74,6 +77,7 @@ export default function AddOrEditQuestion() {
     else {
       setValue("question", "")
       setValue("createdAdminId", "")
+
       removeActiveQuestion()
     }
   }, [isAddOrEditModalOpen])

@@ -8,11 +8,13 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { toast } from "@/hooks/use-toast"
+import { useAuthenticationStore } from "@/state/authentication"
 import { useQuestionStore } from "@/state/questions"
 import { TrashIcon, PencilIcon } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export default function QuestionsList() {
+  const { authenticatedUser } = useAuthenticationStore()
   const { questions, deleteQuestion, openAddOrEditModal, setActiveQuestion } =
     useQuestionStore()
 
@@ -35,38 +37,40 @@ export default function QuestionsList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {questions.map(question => (
-          <TableRow key={question.id}>
-            <TableCell className="font-medium">{question.id}</TableCell>
-            <TableCell>
-              <Link
-                className="underline text-blue-700"
-                to={`/admin/question/answers/${question.id}`}
-              >
-                {question.question}
-              </Link>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2 justify-end">
-                <button
-                  onClick={() => {
-                    openAddOrEditModal()
-                    setActiveQuestion(question)
-                  }}
-                  className="bg-green-500 p-1.5 rounded-full text-white"
+        {questions
+          .filter(question => question.createdAdminId === authenticatedUser?.id)
+          .map(question => (
+            <TableRow key={question.id}>
+              <TableCell className="font-medium">{question.id}</TableCell>
+              <TableCell>
+                <Link
+                  className="underline text-blue-700"
+                  to={`/admin/question/answers/${question.id}`}
                 >
-                  <PencilIcon size={16} />
-                </button>
-                <button
-                  className="bg-red-500 p-1.5 rounded-full text-white"
-                  onClick={() => questionDeleteHandler(question.id)}
-                >
-                  <TrashIcon size={16} />
-                </button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
+                  {question.question}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2 justify-end">
+                  <button
+                    onClick={() => {
+                      openAddOrEditModal()
+                      setActiveQuestion(question)
+                    }}
+                    className="bg-green-500 p-1.5 rounded-full text-white"
+                  >
+                    <PencilIcon size={16} />
+                  </button>
+                  <button
+                    className="bg-red-500 p-1.5 rounded-full text-white"
+                    onClick={() => questionDeleteHandler(question.id)}
+                  >
+                    <TrashIcon size={16} />
+                  </button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   )
