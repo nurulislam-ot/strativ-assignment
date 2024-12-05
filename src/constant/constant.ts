@@ -13,5 +13,17 @@ export const users: UserI[] = [
     id: randomId(),
     password: "password",
     role: "admin"
+  },
+  {
+    email: "user@gmail.com",
+    id: randomId(),
+    password: "123456",
+    role: "general"
+  },
+  {
+    email: "bangladesh@gmail.com",
+    id: randomId(),
+    password: "password",
+    role: "admin"
   }
 ]
